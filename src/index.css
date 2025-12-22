@@ -2,6 +2,6 @@
 @plugin "daisyui";
 @tailwind utilities;
 
-/* body{
-  background: azure;
-} */
+@plugin "daisyui" {
+  themes: all;
+}
