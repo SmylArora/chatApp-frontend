@@ -91,7 +91,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Messages */}
-            <div className="p-4 space-y-3 min-h-[200px]">
+            <div className="p-4 space-y-3 min-h-50">
               {Preview_Messages.map((msg) => (
                 <div
                   key={msg.id}

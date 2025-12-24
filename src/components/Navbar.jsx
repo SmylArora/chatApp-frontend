@@ -13,7 +13,7 @@ export default function Navbar() {
           <div className="size-9 rounded-xl bg-primary/10 flex items-center justify-center">
             <MessageSquare className="size-5 text-primary" />
           </div>
-          <span className="text-xl font-bold">Chatty</span>
+          <span className="text-xl font-bold">AText</span>
         </Link>
       </div>
 
