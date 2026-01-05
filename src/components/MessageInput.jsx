@@ -1,6 +1,8 @@
-import { useState  , useRef} from "react";
+import { useState, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
+import { Image, Send } from "lucide-react";
 import { X } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function MessageInput() {
   const [text, setText] = useState("");
@@ -8,11 +10,46 @@ export default function MessageInput() {
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
 
-  const handleImageChange = (e) => {};
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file.type.startsWith("image/")) {
+      toast.error("Plese Select an image file");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
-  const removeImage = () => {};
+  const removeImage = () => {
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
-  const handleSendMessage = async (e) => {};
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!text.trim() && !imagePreview) {
+      return;
+    }
+    try {
+      await sendMessage({
+        text: text.trim(),
+        image: imagePreview,
+      });
+      //clear form
+      setText("");
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = " ";
+      }
+    } catch (error) {
+      console.error("Failed to send message", error);
+    }
+  };
 
   return (
     <div className="p-4 w-full">
@@ -43,14 +80,30 @@ export default function MessageInput() {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-           <input
+          <input
             type="file"
             accept="image/*"
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
           />
+          <button
+            type="button"
+            className={`hidden sm:flex btn btn-circle ${
+              imagePreview ? "text-emerald-500" : "text-zinc-400"
+            }`}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Image size={20} />
+          </button>
         </div>
+        <button
+          type="submit"
+          className="tn btn-sm btn-circle"
+          disabled={!text.trim() && !imagePreview}
+        >
+          <Send size={22} />
+        </button>
       </form>
     </div>
   );
